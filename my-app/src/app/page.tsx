@@ -49,6 +49,7 @@ export default function Home() {
                     data-nimg="1"
                     className="w-5/12 border shadow-lg"
                     style={{ color: "transparent" }}
+                    src="https://cognimate.vercel.app/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Ffeature-showcase-1.6ff36ef3.jpg&w=3840&q=75"
                 />
             </div>
             <div className="flex h-screen items-center justify-around px-4">
@@ -61,6 +62,7 @@ export default function Home() {
                     data-nimg="1"
                     className="w-5/12 border shadow-lg"
                     style={{ color: "transparent" }}
+                    src="https://cognimate.vercel.app/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Ffeature-showcase-2.3e9e5ae8.png&w=3840&q=75"
                 />
                 <div className="flex w-3/12 flex-col gap-2">
                     <h1 className="text-4xl font-bold">
