@@ -1,3 +1,4 @@
+"use client";
 import {
     Drawer,
     DrawerClose,
@@ -8,13 +9,18 @@ import {
     DrawerTitle,
     DrawerTrigger,
 } from "@/components/ui/drawer";
+import React, { useState } from "react";
+import ReactQuill from "react-quill";
 import { Button } from "./ui/button";
+import "react-quill/dist/quill.snow.css";
 
 import { FunctionComponent } from "react";
 
 interface Props {}
 
 const Note: FunctionComponent<Props> = () => {
+    const [value, setValue] = useState("");
+
     return (
         <Drawer>
             <div className="fixed bottom-0 right-3 p-4">
@@ -49,9 +55,16 @@ const Note: FunctionComponent<Props> = () => {
                             Note 📝
                         </DrawerTitle>
                         <DrawerDescription>
-                            <Button className="w-[350px] mt-2 text-lg py-3">
+                            <Button className="w-full mt-2 text-lg py-3">
                                 Ask AI to Tidy Up 🪄✨
                             </Button>
+                        </DrawerDescription>
+                        <DrawerDescription className="mb-5 mt-2">
+                            <ReactQuill
+                                theme="snow"
+                                value={value}
+                                onChange={setValue}
+                            />
                         </DrawerDescription>
                     </DrawerHeader>
                 </div>
