@@ -11,7 +11,7 @@ const Course: FunctionComponent<Props> = () => {
     return (
         <div className="pt-28 px-24 flex flex-wrap gap-5 justify-center">
             <Link href={`/course/create`}>
-                <Card className="border-ghost flex h-[500px] w-[300px] items-center justify-center border border-dashed duration-700 ease-in hover:scale-[1.03] hover:border hover:border-primary">
+                <Card className="border-ghost flex h-[500px] w-[300px] items-center justify-center outline-dashed duration-700 ease-in hover:scale-[1.03] hover:border hover:outline-primary outline-[#E7E5E4]">
                     <Plus className="h-10 w-10" />
                 </Card>
             </Link>
