@@ -3,26 +3,7 @@ import { Button } from "@/components/ui/button";
 
 export default function Home() {
     return (
-        <main className="p-10 gradient-background relative">
-            <nav>
-                <div className="flex items-center gap-2 absolute">
-                    <img
-                        alt="favicon"
-                        loading="lazy"
-                        width="35"
-                        height="35"
-                        decoding="async"
-                        data-nimg="1"
-                        className="dark:invert"
-                        style={{ color: "transparent" }}
-                        src="logo.svg"
-                    />
-                    <h1 className="font-bold text-2xl">Cognimate</h1>
-                </div>
-                <div className="flex justify-center">
-                    <Menu />
-                </div>
-            </nav>
+        <main className="gradient-background">
             <div className="min-h-[90vh] flex flex-col items-center justify-center gap-5">
                 <h1 className="text-5xl font-bold">Cognimate 🤖.</h1>
                 <p className="text-2xl">

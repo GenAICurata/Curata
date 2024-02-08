@@ -23,31 +23,29 @@ const Note: FunctionComponent<Props> = () => {
 
     return (
         <Drawer>
-            <div className="fixed bottom-0 right-3 p-4">
-                <DrawerTrigger>
-                    <div className="bg-white rounded-full p-6">
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            className="lucide lucide-notebook-pen "
-                        >
-                            <path d="M13.4 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7.4"></path>
-                            <path d="M2 6h4"></path>
-                            <path d="M2 10h4"></path>
-                            <path d="M2 14h4"></path>
-                            <path d="M2 18h4"></path>
-                            <path d="M18.4 2.6a2.17 2.17 0 0 1 3 3L16 11l-4 1 1-4Z"></path>
-                        </svg>
-                    </div>
-                </DrawerTrigger>
-            </div>
+            <DrawerTrigger className="fixed bottom-0 right-3 p-4">
+                <div className="bg-white rounded-full p-8 border-2">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="lucide lucide-notebook-pen "
+                    >
+                        <path d="M13.4 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7.4"></path>
+                        <path d="M2 6h4"></path>
+                        <path d="M2 10h4"></path>
+                        <path d="M2 14h4"></path>
+                        <path d="M2 18h4"></path>
+                        <path d="M18.4 2.6a2.17 2.17 0 0 1 3 3L16 11l-4 1 1-4Z"></path>
+                    </svg>
+                </div>
+            </DrawerTrigger>
             <DrawerContent>
                 <div className="flex justify-center">
                     <DrawerHeader>
