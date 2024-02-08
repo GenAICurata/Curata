@@ -23,14 +23,14 @@ const Menu: FunctionComponent<Props> = () => {
                     data-nimg="1"
                     className="dark:invert"
                     style={{ color: "transparent" }}
-                    src="logo.svg"
+                    src="/logo.svg"
                 />
                 <h1 className="font-bold text-2xl">Cognimate</h1>
             </div>
             <div className="flex justify-center">
                 <Menubar>
                     <MenubarMenu>
-                        <MenubarTrigger>
+                        <MenubarTrigger className="cursor-pointer">
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 width="24"
@@ -55,9 +55,12 @@ const Menu: FunctionComponent<Props> = () => {
                             </svg>
                         </MenubarTrigger>
                         <MenubarContent>
-                            <MenubarItem>Light</MenubarItem>
-                            <MenubarItem>Dark</MenubarItem>
-                            <MenubarItem>System</MenubarItem>
+                            <MenubarItem className="cursor-pointer">
+                                Light
+                            </MenubarItem>
+                            <MenubarItem className="cursor-pointer">
+                                Dark
+                            </MenubarItem>
                         </MenubarContent>
                     </MenubarMenu>
                     <MenubarMenu>
@@ -72,7 +75,7 @@ const Menu: FunctionComponent<Props> = () => {
                     </MenubarMenu>
                     <MenubarMenu>
                         <MenubarTrigger>
-                            <Link href="/summarize">AI Summarize ✨</Link>
+                            <Link href="/summarize">ChatPDF ✨</Link>
                         </MenubarTrigger>
                     </MenubarMenu>
                 </Menubar>

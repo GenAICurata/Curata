@@ -1,5 +1,5 @@
-import Menu from "@/components/Menu";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export default function Home() {
     return (
@@ -10,7 +10,9 @@ export default function Home() {
                     Your all-in-one AI Study Assistant designed to elevate your
                     learning experience
                 </p>
-                <Button>Get Started</Button>
+                <Link href="/course">
+                    <Button>Get Started</Button>
+                </Link>
             </div>
             <div className="flex h-screen items-center justify-around px-4">
                 <div className="flex w-3/12 flex-col gap-2">

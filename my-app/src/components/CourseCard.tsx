@@ -1,18 +1,11 @@
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { FunctionComponent } from "react";
 
 interface Props {}
 
 const CourseCard: FunctionComponent<Props> = () => {
     return (
-        <Card className="w-[300px] h-[500px] duration-500 ease-in hover:scale-[1.03] hover:border hover:border-primary">
+        <Card className="w-[300px] h-[500px] duration-500 ease-in hover:scale-[1.03] hover:border hover:border-primary cursor-pointer">
             <CardHeader>
                 <CardTitle className="text-md">Machine Learning</CardTitle>
             </CardHeader>

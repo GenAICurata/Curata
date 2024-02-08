@@ -23,7 +23,7 @@ const Note: FunctionComponent<Props> = () => {
 
     return (
         <Drawer>
-            <DrawerTrigger className="fixed bottom-0 right-3 p-4">
+            <DrawerTrigger className="fixed bottom-5 right-5 p-4">
                 <div className="bg-white rounded-full p-8 border-2">
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
