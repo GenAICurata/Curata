@@ -13,20 +13,22 @@ interface Props {}
 const Menu: FunctionComponent<Props> = () => {
     return (
         <nav className="absolute left-0 right-0 px-5 pt-5">
-            <div className="flex items-center gap-2 absolute">
-                <img
-                    alt="favicon"
-                    loading="lazy"
-                    width="35"
-                    height="35"
-                    decoding="async"
-                    data-nimg="1"
-                    className="dark:invert"
-                    style={{ color: "transparent" }}
-                    src="/logo.svg"
-                />
-                <h1 className="font-bold text-2xl">Cognimate</h1>
-            </div>
+            <Link href="/">
+                <div className="flex items-center gap-2 absolute cursor-pointer">
+                    <img
+                        alt="favicon"
+                        loading="lazy"
+                        width="35"
+                        height="35"
+                        decoding="async"
+                        data-nimg="1"
+                        className="dark:invert"
+                        style={{ color: "transparent" }}
+                        src="/logo.svg"
+                    />
+                    <h1 className="font-bold text-2xl">Cognimate</h1>
+                </div>
+            </Link>
             <div className="flex justify-center">
                 <Menubar>
                     <MenubarMenu>
