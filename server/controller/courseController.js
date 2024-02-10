@@ -1,7 +1,12 @@
+import OpenAI from "openai";
+const openai = new OpenAI();
+client = OpenAI();
+
 class CourseController {
     // generate subtopics
     static createCourse(req, res) {
-        res.send("create course");
+        console.log(req.body);
+        res.send("success");
     }
 
     // youtube api
