@@ -22,16 +22,17 @@ class CourseController {
                             {
                                 "role": "user",
                                 "content": promptPrefix +
-                                    `Provide me with a book chapter title for the unit in less than 10 words that doesn't exist yet in ${visited}`
+                                    `Provide me with a book chapter title for the unit in less than 10 words that doesn't exist yet in ${visited}.`
                             },
                         ]
                     })
 
-                    const bookChapterName = response?.choices[0]?.message?.content;
+                    const bookChapterName = response?.choices[0]?.message?.content.replace(/^"(.*)"$/, '$1');
                     bookChaptersList.push({ chapterName: bookChapterName });
                     visited += `${bookChapterName}, `
                 }
 
+                console.log(bookChaptersList);
                 // post the chapters and units to DB
                 const addedUnit = await Unit.create({ unitName: unit, CourseId: addedCourse.dataValues.id })
                 await Chapter.bulkCreate(bookChaptersList.map((chapter) => {

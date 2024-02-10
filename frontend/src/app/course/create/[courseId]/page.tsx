@@ -37,6 +37,8 @@ const CreateSubTopicsPage: FunctionComponent<Props> = () => {
         setCourse(data);
     };
 
+    const generateSubTopicContent = () => {};
+
     return (
         <div className="py-28 flex justify-center items-center">
             <div>
@@ -78,7 +80,10 @@ const CreateSubTopicsPage: FunctionComponent<Props> = () => {
                 <div className="mt-8 flex items-center gap-5">
                     <Separator className="flex-grow" />
                     <div className="flex gap-2">
-                        <Button className="font-bold flex gap-1">
+                        <Button
+                            className="font-bold flex gap-1"
+                            onClick={generateSubTopicContent}
+                        >
                             Generate
                             <ChevronRight />
                         </Button>
