@@ -2,14 +2,14 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('CourseUnits', {
+    await queryInterface.createTable('Units', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      courseId: {
+      CourseId: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
@@ -19,7 +19,7 @@ module.exports = {
         onDelete: "cascade",
         onUpdate: "cascade"
       },
-      courseUnitName: {
+      unitName: {
         type: Sequelize.STRING,
         allowNull: false
       },
@@ -34,6 +34,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('CourseUnits');
+    await queryInterface.dropTable('Units');
   }
 };

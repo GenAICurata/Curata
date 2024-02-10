@@ -1,18 +1,49 @@
-//const openai = require('../vendors/openAI');
-console.log(process.env.OPENAI_API_KEY);
-
+const { Course, Unit, Chapter } = require('../models');
 
 class CourseController {
-    // generate subtopics
-    static async createCourse(req, res) {
-        console.log(req.body);
+    static async createCourse(req, res, next) {
+        try {
+            const openai = req.openai;
+            const { courseName, courseUnits } = req.body;
 
-        /* response = await client.chat.completions.create(
-            model = "gpt-3.5-turbo",
-            messages = [
-                { "role": "user", "content": "Who won the world series in 2020?" },
-            ]
-        ) */
+            // post the main course in db
+            const addedCourse = await Course.create({ courseName });
+
+            // generate the book chapters
+            for (const unit of courseUnits) {
+                const promptPrefix = `Given the unit: ${unit} of the main subject ${courseName}: `;
+                let visited = "";
+                const bookChaptersList = [];
+
+                for (let i = 0; i < 3; ++i) {
+                    const response = await openai.chat.completions.create({
+                        model: "gpt-3.5-turbo",
+                        messages: [
+                            {
+                                "role": "user",
+                                "content": promptPrefix +
+                                    `Provide me with a book chapter title for the unit in less than 10 words that doesn't exist yet in ${visited}`
+                            },
+                        ]
+                    })
+
+                    const bookChapterName = response?.choices[0]?.message?.content;
+                    bookChaptersList.push({ chapterName: bookChapterName });
+                    visited += `${bookChapterName}, `
+                }
+
+                // post the chapters and units to DB
+                const addedUnit = await Unit.create({ unitName: unit, CourseId: addedCourse.dataValues.id })
+                await Chapter.bulkCreate(bookChaptersList.map((chapter) => {
+                    chapter.UnitId = addedUnit.dataValues.id;
+                    return chapter;
+                }))
+            }
+
+            res.status(200).send("Course generated successfully");
+        } catch (err) {
+            next(err);
+        }
     }
 
     // youtube api

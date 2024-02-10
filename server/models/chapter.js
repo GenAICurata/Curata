@@ -3,38 +3,43 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class Course extends Model {
+  class Chapter extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      Course.hasMany(models.Unit);
+      Chapter.belongsTo(models.Unit);
     }
   }
-  Course.init({
+  Chapter.init({
     id: {
       allowNull: false,
       autoIncrement: true,
       primaryKey: true,
       type: DataTypes.INTEGER
     },
-    courseName: {
-      type: DataTypes.STRING,
+    chapterName: {
+      type: DataTypes.INTEGER,
       allowNull: false,
+      references: {
+        model: "Unit",
+        key: "id"
+      },
       validate: {
         notEmpty: {
-          msg: "Course name must not be empty"
+          msg: "Chapter name must not be empty"
         },
         notNull: {
-          msg: "Course name must not be null"
+          msg: "Chapter name must not be null"
         }
       }
-    }
+    },
+    UnitId: DataTypes.INTEGER
   }, {
     sequelize,
-    modelName: 'Course',
+    modelName: 'Chapter',
   });
-  return Course;
+  return Chapter;
 };
