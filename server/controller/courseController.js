@@ -1,5 +1,6 @@
 const { Course, Unit, Chapter } = require('../models');
 const axios = require('axios');
+const { YoutubeTranscript } = require("youtube-transcript");
 
 class CourseController {
     static async createCourse(req, res, next) {
@@ -66,23 +67,46 @@ class CourseController {
 
     static async createCourseVideo(req, res, next) {
         try {
+            const openai = req.openai;
             const { chapterName, chapterId } = req.body;
-            const { data } = await axios(
-                `https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=1&order=relevance&q=${chapterName}&type=video&key=${process.env.YOUTUBE_API_KEY}`
+            const { data: videoResult } = await axios(
+                `https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=1&order=relevance&q=${chapterName}&type=video&key=${process.env.YOUTUBE_API_KEY}&videoCaption=closedCaption`
             );
+            const { thumbnails, title } = videoResult.items[0].snippet;
+            const { videoId } = videoResult.items[0].id;
+
+            // generate transcript
+            const transcriptArr = await YoutubeTranscript.fetchTranscript(videoId, {
+                lang: "en",
+                country: "EN",
+            });
+
+            let transcript = "";
+            for (const t of transcriptArr) {
+                transcript += t.text + " ";
+            }
+            transcript.replaceAll("\n", "");
+
+            // summarize transcript
+            const promptPrefix = transcript;
+            const response = await openai.chat.completions.create({
+                model: "gpt-3.5-turbo",
+                messages: [
+                    {
+                        "role": "user",
+                        "content": promptPrefix +
+                            `summarise the following transcript in 250 more or less words without referencing the video or channel itself, summarize only the educational content of the video.`
+                    },
+                ]
+            })
+            const summarizedTranscript = response?.choices[0]?.message?.content;
 
             // insert to db
-            const { thumbnails, title, channelId } = data.items[0].snippet;
-            await User.update({ videoThumbNail: thumbnails?.default?.url, videoTitle: title, videoChannelId: channelId }, {
+            await User.update({ videoThumbNail: thumbnails?.default?.url, videoTitle: title, videoId, videoTranscript: summarizedTranscript }, {
                 where: {
                     id: chapterId
                 },
             });
-
-            // generate transcript
-
-
-            // query transcript and summarize
 
             res.status(200).json({ message: "Course video generated successfully" });
         } catch (err) {
