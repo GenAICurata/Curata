@@ -17,7 +17,8 @@ import { Separator } from "@/components/ui/separator";
 import { Plus, Trash } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
-import { apiClient } from "@/lib/axios";
+import { useRouter } from "next/navigation";
+import { useToast } from "@/components/ui/use-toast";
 
 interface Props {}
 
@@ -27,6 +28,8 @@ const formSchema = z.object({
 });
 
 const CourseCreate: FunctionComponent<Props> = () => {
+    const router = useRouter();
+    const { toast } = useToast();
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -38,7 +41,21 @@ const CourseCreate: FunctionComponent<Props> = () => {
     const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = async (
         data
     ) => {
-        await axios.post("http://localhost:3001/course", data);
+        try {
+            const res = await axios.post("http://localhost:3001/course", data);
+
+            toast({
+                title: "Successful",
+                description: "Course created successfully!",
+            });
+
+            router.push(`/course/create/${res?.data?.course?.id}`);
+        } catch (err) {
+            toast({
+                title: "Error occured!",
+                description: `${err}`,
+            });
+        }
     };
 
     return (

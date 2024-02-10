@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import Note from "@/components/Note";
 import "./globals.css";
 import Menu from "@/components/Menu";
+import { Toaster } from "@/components/ui/toaster";
 
 export const fontSans = FontSans({
     subsets: ["latin"],
@@ -34,6 +35,7 @@ export default function RootLayout({
                 <Menu />
                 {children}
                 <Note />
+                <Toaster />
             </body>
         </html>
     );
