@@ -68,41 +68,55 @@ class CourseController {
     static async createCourseVideo(req, res, next) {
         try {
             const openai = req.openai;
-            const { chapterName, chapterId } = req.body;
+            const { chapterName, chapterId, unitName } = req.body;
+
+            // get search term from chapter
+            const YTQuery = await openai.chat.completions.create({
+                messages: [
+                    {
+                        role: "user",
+                        content:
+                            `Given the chapter ${chapterName} from the unit ${unitName}, ` +
+                            "Provide me with a youtube search query regarding the following chapter for the given topic WITHOUT QUOTATION MARKS in 20 words or less.",
+                    },
+                ],
+                model: "gpt-3.5-turbo-0125",
+            });
+
+            console.log(YTQuery?.choices[0]?.message?.content);
+
+            // search video based on query
             const { data: videoResult } = await axios(
-                `https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=1&order=relevance&q=${chapterName}&type=video&key=${process.env.YOUTUBE_API_KEY}&videoCaption=closedCaption`
+                `https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=1&order=relevance&q=${YTQuery?.choices[0]?.message?.content}&type=video&key=${process.env.YOUTUBE_API_KEY}&videoCaption=closedCaption`
             );
+
             const { thumbnails, title } = videoResult.items[0].snippet;
             const { videoId } = videoResult.items[0].id;
 
             // generate transcript
-            const transcriptArr = await YoutubeTranscript.fetchTranscript(videoId, {
+            const transcript = (await YoutubeTranscript.fetchTranscript(videoId, {
                 lang: "en",
                 country: "EN",
-            });
+            })).map(t => t.text).join(" ").replace(/\n/g, "").slice(0, 500);
 
-            let transcript = "";
-            for (const t of transcriptArr) {
-                transcript += t.text + " ";
-            }
-            transcript.replaceAll("\n", "");
+            console.log(transcript);
 
             // summarize transcript
-            const promptPrefix = transcript;
-            const response = await openai.chat.completions.create({
+            const summarizedTranscript = await openai.chat.completions.create({
                 model: "gpt-3.5-turbo",
                 messages: [
                     {
                         "role": "user",
-                        "content": promptPrefix +
+                        "content": transcript +
                             `summarise the following transcript in 250 more or less words without referencing the video or channel itself, summarize only the educational content of the video.`
                     },
                 ]
             })
-            const summarizedTranscript = response?.choices[0]?.message?.content;
+
+            // generate questions
 
             // insert to db
-            await User.update({ videoThumbNail: thumbnails?.default?.url, videoTitle: title, videoId, videoTranscript: summarizedTranscript }, {
+            await Chapter.update({ videoThumbNail: thumbnails?.default?.url, videoTitle: title, videoId, videoTranscript: summarizedTranscript?.choices[0]?.message?.content }, {
                 where: {
                     id: chapterId
                 },

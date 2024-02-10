@@ -16,7 +16,7 @@ module.exports = {
     });
 
     await queryInterface.addColumn("Chapters", "videoTranscript", {
-      type: Sequelize.STRING,
+      type: Sequelize.TEXT,
     });
   },
 

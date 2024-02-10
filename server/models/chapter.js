@@ -40,7 +40,7 @@ module.exports = (sequelize, DataTypes) => {
     videoId: DataTypes.STRING,
     videoThumbNail: DataTypes.STRING,
     videoTitle: DataTypes.STRING,
-    videoTranscript: DataTypes.STRING
+    videoTranscript: DataTypes.TEXT
   }, {
     sequelize,
     modelName: 'Chapter',

@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { ChevronRight } from "lucide-react";
 import { apiClient } from "@/lib/axios";
 import { useParams } from "next/navigation";
+import { useToast } from "@/components/ui/use-toast";
 
 interface Course {
     id: number;
@@ -28,6 +29,7 @@ interface Props {}
 
 const CreateSubTopicsPage: FunctionComponent<Props> = () => {
     const [course, setCourse] = useState<Course>();
+    const { toast } = useToast();
     const { courseId } = useParams();
 
     useEffect(() => {
@@ -39,7 +41,35 @@ const CreateSubTopicsPage: FunctionComponent<Props> = () => {
         setCourse(data);
     };
 
-    const generateSubTopicContent = () => {};
+    const generateSubTopicContent = async () => {
+        try {
+            const requestBody: any = [];
+            course?.Units.forEach((unit) => {
+                const unitName = unit.unitName;
+                unit?.Chapters.forEach((chapter) => {
+                    const chapterName = chapter.chapterName;
+                    const chapterId = chapter.id;
+                    requestBody.push({ unitName, chapterName, chapterId });
+                });
+            });
+
+            await Promise.all(
+                requestBody.map((chapter: any) => {
+                    return apiClient.put("/course", chapter);
+                })
+            );
+
+            toast({
+                title: "Success!",
+                description: `Learning content generated successfully!`,
+            });
+        } catch (err) {
+            toast({
+                title: "Error occured!",
+                description: `${err}`,
+            });
+        }
+    };
 
     return (
         <div className="py-28 flex justify-center items-center">
