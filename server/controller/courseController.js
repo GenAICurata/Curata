@@ -1,12 +1,18 @@
-import OpenAI from "openai";
-const openai = new OpenAI();
-client = OpenAI();
+//const openai = require('../vendors/openAI');
+console.log(process.env.OPENAI_API_KEY);
+
 
 class CourseController {
     // generate subtopics
-    static createCourse(req, res) {
+    static async createCourse(req, res) {
         console.log(req.body);
-        res.send("success");
+
+        /* response = await client.chat.completions.create(
+            model = "gpt-3.5-turbo",
+            messages = [
+                { "role": "user", "content": "Who won the world series in 2020?" },
+            ]
+        ) */
     }
 
     // youtube api
