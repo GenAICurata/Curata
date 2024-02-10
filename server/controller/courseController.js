@@ -40,15 +40,27 @@ class CourseController {
                 }))
             }
 
-            res.status(200).send("Course generated successfully");
+            res.status(200).json({ message: "Course generated successfully", course: addedCourse });
         } catch (err) {
             next(err);
         }
     }
 
-    // youtube api
-    static getCourseDetail(req, res) {
-        res.send("get course detail");
+    static async getCourse(req, res, next) {
+        try {
+            const course = await Course.findOne({
+                where: {
+                    id: req.params.id
+                },
+                include: {
+                    model: Unit,
+                    include: Chapter
+                }
+            });
+            res.status(200).json(course)
+        } catch (err) {
+            next(err);
+        }
     }
 }
 

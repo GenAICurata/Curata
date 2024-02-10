@@ -16,9 +16,9 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Plus, Trash } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/components/ui/use-toast";
+import { apiClient } from "@/lib/axios";
 
 interface Props {}
 
@@ -42,8 +42,7 @@ const CourseCreate: FunctionComponent<Props> = () => {
         data
     ) => {
         try {
-            const res = await axios.post("http://localhost:3001/course", data);
-
+            const res = await apiClient.post("/course", data);
             toast({
                 title: "Successful",
                 description: "Course created successfully!",
