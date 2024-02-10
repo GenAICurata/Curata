@@ -8,7 +8,7 @@ import { apiClient } from "@/lib/axios";
 import { useParams } from "next/navigation";
 
 interface Course {
-    courseId: number;
+    id: number;
     courseName: string;
     Units: Array<Unit>;
 }
@@ -16,10 +16,12 @@ interface Course {
 interface Unit {
     unitName: string;
     Chapters: Array<Chapter>;
+    id: number;
 }
 
 interface Chapter {
     chapterName: string;
+    id: number;
 }
 
 interface Props {}

@@ -1,4 +1,5 @@
 const { Course, Unit, Chapter } = require('../models');
+const axios = require('axios');
 
 class CourseController {
     static async createCourse(req, res, next) {
@@ -32,7 +33,6 @@ class CourseController {
                     visited += `${bookChapterName}, `
                 }
 
-                console.log(bookChaptersList);
                 // post the chapters and units to DB
                 const addedUnit = await Unit.create({ unitName: unit, CourseId: addedCourse.dataValues.id })
                 await Chapter.bulkCreate(bookChaptersList.map((chapter) => {
@@ -59,6 +59,32 @@ class CourseController {
                 }
             });
             res.status(200).json(course)
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    static async createCourseVideo(req, res, next) {
+        try {
+            const { chapterName, chapterId } = req.body;
+            const { data } = await axios(
+                `https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=1&order=relevance&q=${chapterName}&type=video&key=${process.env.YOUTUBE_API_KEY}`
+            );
+
+            // insert to db
+            const { thumbnails, title, channelId } = data.items[0].snippet;
+            await User.update({ videoThumbNail: thumbnails?.default?.url, videoTitle: title, videoChannelId: channelId }, {
+                where: {
+                    id: chapterId
+                },
+            });
+
+            // generate transcript
+
+
+            // query transcript and summarize
+
+            res.status(200).json({ message: "Course video generated successfully" });
         } catch (err) {
             next(err);
         }

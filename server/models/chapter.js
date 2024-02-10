@@ -36,7 +36,10 @@ module.exports = (sequelize, DataTypes) => {
         }
       }
     },
-    UnitId: DataTypes.INTEGER
+    UnitId: DataTypes.INTEGER,
+    videoChannelId: DataTypes.STRING,
+    videoThumbNail: DataTypes.STRING,
+    videoTitle: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'Chapter',
