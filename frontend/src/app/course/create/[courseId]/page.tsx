@@ -66,9 +66,7 @@ const CreateSubTopicsPage: FunctionComponent<Props> = () => {
 
             setLoading(false);
             // get into the course, first chapter
-            router.push(
-                `course/${course?.id}/${course?.Units[0]?.id}/${course?.Units[0]?.Chapters[0]?.id}`
-            );
+            router.push(`/course/${course?.id}/0/0`);
             toast({
                 title: "Success!",
                 description: `Learning content generated successfully!`,

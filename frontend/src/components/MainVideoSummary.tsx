@@ -1,27 +1,14 @@
 import React from "react";
-
-interface Unit {
-    unitName: string;
-    Chapters: Array<Chapter>;
-    id: number;
-}
-
-interface Chapter {
-    chapterName: string;
-    id: number;
-    videoId: string;
-    videoTranscript: string;
-}
+import { Unit, Chapter } from "@/types";
 
 type Props = {
-    chapter: Chapter;
-    unit: Unit;
+    chapter: Chapter | null;
+    unit: Unit | null;
     unitIndex: number;
     chapterIndex: number;
 };
 
 const MainVideoSummary = ({ unitIndex, chapter, chapterIndex }: Props) => {
-    console.log(chapter);
     return (
         <div className="mt-16 flex-[2]">
             <h4 className="text-sm uppercase text-secondary-foreground/60">

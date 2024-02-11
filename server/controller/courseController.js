@@ -19,8 +19,6 @@ class CourseController {
                 ]
             })
 
-            console.log(imageSearchTerm?.choices[0]?.message.content);
-
             // unsplash
             const { data: unsplashImage } = await axios(`https://api.unsplash.com/search/photos?page=1&query=${imageSearchTerm?.choices[0]?.message.content}&client_id=${process.env.UNSPLASH_API_KEY}`);
 
@@ -129,8 +127,6 @@ class CourseController {
                 model: "gpt-3.5-turbo-0125",
             });
 
-            console.log(YTQuery?.choices[0]?.message?.content);
-
             // search video based on query
             const { data: videoResult } = await axios(
                 `https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=1&order=relevance&q=${YTQuery?.choices[0]?.message?.content}&type=video&key=${process.env.YOUTUBE_API_KEY}&videoCaption=closedCaption`
@@ -167,16 +163,19 @@ class CourseController {
             // generate questions
             for (let i = 0; i < 5; i++) {
                 const options = [];
+                const visitedQuestions = "";
+
                 const question = await openai.chat.completions.create({
                     messages: [
                         {
                             role: "user",
-                            content: `You are to generate a random theory based question about ${courseName}`
+                            content: `You are to generate a conceptual question regarding main topic of ${courseName} focusing on subtopic of ${title}. Give only one question that doesn't exist yet in ${visitedQuestions}`
                         }],
                     model: "gpt-3.5-turbo",
                 });
 
                 const generatedQuestion = question.choices[0]?.message.content;
+                visitedQuestions += `${generatedQuestion}, `
 
                 // insert to db question
                 const addedQuestion = await Question.create({ ChapterId: chapterId, question: generatedQuestion })

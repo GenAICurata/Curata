@@ -6,24 +6,8 @@ import CourseSidebar from "@/components/CourseSidebar";
 import MainVideoSummary from "@/components/MainVideoSummary";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-
-interface Course {
-    id: number;
-    courseName: string;
-    Units: Array<Unit>;
-    loading: false;
-}
-
-interface Unit {
-    unitName: string;
-    Chapters: Array<Chapter>;
-    id: number;
-}
-
-interface Chapter {
-    chapterName: string;
-    id: number;
-}
+import QuizSection from "@/components/QuizSection";
+import { Unit, Course, Chapter } from "@/types";
 
 interface Props {}
 
@@ -60,16 +44,19 @@ const CourseDetail: FunctionComponent<Props> = () => {
 
     return (
         <>
-            <CourseSidebar course={course} currentChapterId={chapter?.id} />
+            <CourseSidebar
+                course={course || null}
+                currentChapterId={chapter?.id || null}
+            />
             <div className="my-2 flex ml-[400px] pl-8 pt-12 mr-5">
                 <MainVideoSummary
-                    chapter={chapter}
+                    chapter={chapter as Chapter}
                     chapterIndex={chapterIndex}
-                    unit={unit}
+                    unit={unit as Unit}
                     unitIndex={unitIndex}
                 />
-                <div className="h-screen w-1/3 overflow-y-scroll">
-                    generate quizes here
+                <div className="h-screen w-1/3 overflow-y-scroll pt-12">
+                    <QuizSection chapter={chapter || null} />
                 </div>
             </div>
 

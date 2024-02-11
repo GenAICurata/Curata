@@ -3,28 +3,11 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { FunctionComponent } from "react";
 import { Separator } from "./ui/separator";
+import { Course } from "@/types";
 
 interface CourseSidebarProps {
-    course: Course;
-    currentChapterId: number;
-}
-
-interface Course {
-    id: number;
-    courseName: string;
-    Units: Array<Unit>;
-    loading: false;
-}
-
-interface Unit {
-    unitName: string;
-    Chapters: Array<Chapter>;
-    id: number;
-}
-
-interface Chapter {
-    chapterName: string;
-    id: number;
+    course: Course | null;
+    currentChapterId: number | null;
 }
 
 const CourseSidebar: FunctionComponent<CourseSidebarProps> = ({
