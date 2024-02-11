@@ -1,5 +1,5 @@
 "use client";
-import { FunctionComponent, useEffect, useState } from "react";
+import { FunctionComponent, useEffect, useRef, useState } from "react";
 import { AlertCircle } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
@@ -7,11 +7,13 @@ import { ChevronRight } from "lucide-react";
 import { apiClient } from "@/lib/axios";
 import { useParams } from "next/navigation";
 import { useToast } from "@/components/ui/use-toast";
+import { useRouter } from "next/navigation";
 
 interface Course {
     id: number;
     courseName: string;
     Units: Array<Unit>;
+    loading: false;
 }
 
 interface Unit {
@@ -31,6 +33,8 @@ const CreateSubTopicsPage: FunctionComponent<Props> = () => {
     const [course, setCourse] = useState<Course>();
     const { toast } = useToast();
     const { courseId } = useParams();
+    const [loading, setLoading] = useState(false);
+    const router = useRouter();
 
     useEffect(() => {
         getCourseDetail();
@@ -43,6 +47,7 @@ const CreateSubTopicsPage: FunctionComponent<Props> = () => {
 
     const generateSubTopicContent = async () => {
         try {
+            setLoading(true);
             const requestBody: any = [];
             course?.Units.forEach((unit) => {
                 const unitName = unit.unitName;
@@ -59,6 +64,11 @@ const CreateSubTopicsPage: FunctionComponent<Props> = () => {
                 })
             );
 
+            setLoading(false);
+            // get into the course, first chapter
+            router.push(
+                `course/${course?.id}/${course?.Units[0]?.id}/${course?.Units[0]?.Chapters[0]?.id}`
+            );
             toast({
                 title: "Success!",
                 description: `Learning content generated successfully!`,
@@ -115,8 +125,9 @@ const CreateSubTopicsPage: FunctionComponent<Props> = () => {
                         <Button
                             className="font-bold flex gap-1"
                             onClick={generateSubTopicContent}
+                            disabled={loading}
                         >
-                            Generate
+                            {loading ? "Loading..." : "Generate"}
                             <ChevronRight />
                         </Button>
                     </div>

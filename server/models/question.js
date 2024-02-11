@@ -18,15 +18,6 @@ module.exports = (sequelize, DataTypes) => {
     ChapterId: DataTypes.INTEGER,
     status: {
       type: DataTypes.STRING,
-      allowNull: false,
-      validate: {
-        notEmpty: {
-          msg: "Question status must not be empty"
-        },
-        notNull: {
-          msg: "Question status must not be null"
-        }
-      }
     },
     question: {
       type: DataTypes.STRING,

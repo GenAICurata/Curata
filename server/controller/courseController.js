@@ -1,4 +1,4 @@
-const { Course, Unit, Chapter } = require('../models');
+const { Course, Unit, Chapter, Question, Option } = require('../models');
 const axios = require('axios');
 const { YoutubeTranscript } = require("youtube-transcript");
 
@@ -8,8 +8,24 @@ class CourseController {
             const openai = req.openai;
             const { courseName, courseUnits } = req.body;
 
+            // image search term
+            const imageSearchTerm = await openai.chat.completions.create({
+                model: "gpt-3.5-turbo",
+                messages: [
+                    {
+                        "role": "user",
+                        "content": `Please provide a good image search term for the title of a course about ${courseName}. This search term will be fed into the unsplash API to generate image for course thumbnails. Make sure it is appropriate for course thumbnails.`
+                    },
+                ]
+            })
+
+            console.log(imageSearchTerm?.choices[0]?.message.content);
+
+            // unsplash
+            const { data: unsplashImage } = await axios(`https://api.unsplash.com/search/photos?page=1&query=${imageSearchTerm?.choices[0]?.message.content}&client_id=${process.env.UNSPLASH_API_KEY}`);
+
             // post the main course in db
-            const addedCourse = await Course.create({ courseName });
+            const addedCourse = await Course.create({ courseName, courseImage: unsplashImage?.results[0]?.urls.small_s3 });
 
             // generate the book chapters
             for (const unit of courseUnits) {
@@ -56,10 +72,65 @@ class CourseController {
                 },
                 include: {
                     model: Unit,
-                    include: Chapter
-                }
+                    include: {
+                        model: Chapter,
+                    }
+                },
+                order: [
+                    [Unit, 'id', 'DESC'],
+                    [Unit, Chapter, 'id', 'DESC']
+                ]
             });
             res.status(200).json(course)
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    static async getCourseChapterDetail(req, res, next) {
+        try {
+            const { id, chapterId, unitId } = req.params;
+            console.log("Test");
+
+            const courseDetail = await Course.findOne({
+                where: {
+                    id: id
+                },
+                include: {
+                    model: Unit,
+                    where: {
+                        id: unitId
+                    },
+                    include: {
+                        model: Chapter,
+                        where: {
+                            id: chapterId
+                        },
+                        include: {
+                            model: Question,
+                            include: Option
+                        },
+                        order: [['id', 'ASC']]
+                    }
+                },
+            });
+            res.status(200).json(courseDetail)
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    static async getAllCourses(req, res, next) {
+        try {
+            const courses = await Course.findAll({
+                include: {
+                    model: Unit,
+                    include: {
+                        model: Chapter
+                    }
+                }
+            });
+            res.status(200).json(courses)
         } catch (err) {
             next(err);
         }
@@ -99,8 +170,6 @@ class CourseController {
                 country: "EN",
             })).map(t => t.text).join(" ").replace(/\n/g, "").slice(0, 500);
 
-            console.log(transcript);
-
             // summarize transcript
             const summarizedTranscript = await openai.chat.completions.create({
                 model: "gpt-3.5-turbo",
@@ -113,11 +182,17 @@ class CourseController {
                 ]
             })
 
+            // update chapter db
+            await Chapter.update({ videoThumbNail: thumbnails?.default?.url, videoTitle: title, videoId, videoTranscript: summarizedTranscript?.choices[0]?.message?.content }, {
+                where: {
+                    id: chapterId
+                },
+            });
+
             // generate questions
-            const questionList = [];
             for (let i = 0; i < 5; i++) {
                 const options = [];
-                const completion = await openai.chat.completions.create({
+                const question = await openai.chat.completions.create({
                     messages: [
                         {
                             role: "user",
@@ -126,7 +201,11 @@ class CourseController {
                     model: "gpt-3.5-turbo",
                 });
 
-                const generatedQuestion = completion.choices[0]?.message.content;
+                const generatedQuestion = question.choices[0]?.message.content;
+
+                // insert to db question
+                const addedQuestion = await Question.create({ ChapterId: chapterId, question: generatedQuestion })
+
                 const answer = await openai.chat.completions.create({
                     messages: [
                         {
@@ -139,9 +218,9 @@ class CourseController {
 
                 const generatedAnswer = answer.choices[0]?.message.content;
                 options.push({
-                    question: generatedAnswer,
+                    option: generatedAnswer,
                     status: true,
-                    ChapterId: chapterId
+                    QuestionId: addedQuestion.dataValues.id
                 })
 
                 let visitedOption = "";
@@ -161,19 +240,14 @@ class CourseController {
                     const wrongOption = option.choices[0]?.message.content;
                     visitedOption += ", " + wrongOption;
                     options.push({
-                        question: wrongOption,
+                        option: wrongOption,
                         status: false,
-                        ChapterId: chapterId
+                        QuestionId: addedQuestion.dataValues.id
                     });
                 }
-            }
 
-            // insert to db
-            await Chapter.update({ videoThumbNail: thumbnails?.default?.url, videoTitle: title, videoId, videoTranscript: summarizedTranscript?.choices[0]?.message?.content }, {
-                where: {
-                    id: chapterId
-                },
-            });
+                await Option.bulkCreate(options);
+            }
 
             res.status(200).json({ message: "Course video generated successfully" });
         } catch (err) {
