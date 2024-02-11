@@ -62,7 +62,7 @@ const CourseDetail: FunctionComponent<Props> = () => {
         <>
             <CourseSidebar
                 course={courseOutline}
-                currentChapterId={chapterId}
+                currentChapterId={Number(chapterId)}
             />{" "}
         </>
     );

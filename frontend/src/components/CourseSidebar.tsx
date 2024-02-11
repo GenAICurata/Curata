@@ -42,7 +42,6 @@ const CourseSidebar: FunctionComponent<CourseSidebarProps> = ({
                         </h2>
                         <h2 className="text-2xl font-bold">{unit?.unitName}</h2>
                         {unit.Chapters.map((chapter, chapterIndex) => {
-                            console.log(currentChapterId, chapter?.id);
                             return (
                                 <div key={chapter.id}>
                                     <Link

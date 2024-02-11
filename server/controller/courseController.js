@@ -75,17 +75,20 @@ class CourseController {
                     include: {
                         model: Chapter,
                     }
-                },
-                order: [
-                    [Unit, 'id', 'DESC'],
-                    [Unit, Chapter, 'id', 'DESC']
-                ]
+                }
             });
+
+            // Sort chapters within each unit
+            course.Units.forEach(unit => {
+                unit.Chapters.sort((a, b) => a.id - b.id);
+            });
+
             res.status(200).json(course)
         } catch (err) {
             next(err);
         }
     }
+
 
     static async getCourseChapterDetail(req, res, next) {
         try {
