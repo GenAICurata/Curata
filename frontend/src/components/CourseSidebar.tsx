@@ -32,7 +32,7 @@ const CourseSidebar: FunctionComponent<CourseSidebarProps> = ({
     currentChapterId,
 }) => {
     return (
-        <div className="absolute h-screen w-[400px] overflow-y-scroll rounded-r-3xl bg-[#F5F5F4] p-6 mt-[80px]">
+        <div className="absolute min-h-screen w-[400px] overflow-y-scroll rounded-r-3xl bg-[#F5F5F4] p-6 mt-[80px]">
             <h1 className="text-4xl font-bold">{course?.courseName}</h1>
             {course?.Units?.map((unit, unitIndex) => {
                 return (
@@ -45,12 +45,12 @@ const CourseSidebar: FunctionComponent<CourseSidebarProps> = ({
                             return (
                                 <div key={chapter.id}>
                                     <Link
-                                        href={`/course/${course?.id}/${unit?.id}/${chapter?.id}`}
+                                        href={`/course/${course?.id}/${unitIndex}/${chapterIndex}`}
                                         className={cn(
                                             "text-secondary-foreground/60",
                                             {
                                                 "font-bold text-green-500":
-                                                    chapter?.id ===
+                                                    chapter?.id ==
                                                     currentChapterId,
                                             }
                                         )}

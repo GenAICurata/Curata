@@ -89,47 +89,19 @@ class CourseController {
         }
     }
 
-
-    static async getCourseChapterDetail(req, res, next) {
-        try {
-            const { id, chapterId, unitId } = req.params;
-            console.log("Test");
-
-            const courseDetail = await Course.findOne({
-                where: {
-                    id: id
-                },
-                include: {
-                    model: Unit,
-                    where: {
-                        id: unitId
-                    },
-                    include: {
-                        model: Chapter,
-                        where: {
-                            id: chapterId
-                        },
-                        include: {
-                            model: Question,
-                            include: Option
-                        },
-                        order: [['id', 'ASC']]
-                    }
-                },
-            });
-            res.status(200).json(courseDetail)
-        } catch (err) {
-            next(err);
-        }
-    }
-
     static async getAllCourses(req, res, next) {
         try {
             const courses = await Course.findAll({
                 include: {
                     model: Unit,
                     include: {
-                        model: Chapter
+                        model: Chapter,
+                        include: {
+                            model: Question,
+                            include: {
+                                model: Option
+                            }
+                        }
                     }
                 }
             });

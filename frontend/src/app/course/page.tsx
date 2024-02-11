@@ -13,6 +13,7 @@ interface Course {
     courseImage: string;
     courseName: string;
     Units: Unit[];
+    id: number;
 }
 
 interface Unit {
@@ -52,12 +53,13 @@ const Course: FunctionComponent<Props> = () => {
                 </Card>
             </Link>
             {courses.map((course, index) => (
-                <CourseCard
-                    key={index}
-                    courseImage={course?.courseImage}
-                    courseName={course?.courseName}
-                    courseUnits={course?.Units}
-                />
+                <Link href={`/course/${course?.id}/0/0`} key={index}>
+                    <CourseCard
+                        courseImage={course?.courseImage}
+                        courseName={course?.courseName}
+                        courseUnits={course?.Units}
+                    />
+                </Link>
             ))}
         </div>
     );
