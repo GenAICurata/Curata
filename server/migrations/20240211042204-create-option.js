@@ -2,27 +2,27 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Questions', {
+    await queryInterface.createTable('Options', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      ChapterId: {
+      option: {
+        type: Sequelize.STRING
+      },
+      status: {
+        type: Sequelize.BOOLEAN
+      },
+      QuestionId: {
         type: Sequelize.INTEGER,
         references: {
-          model: "Chapters",
+          model: "Questions",
           key: "id"
         },
         onDelete: "cascade",
         onUpdate: "cascade"
-      },
-      status: {
-        type: Sequelize.STRING
-      },
-      question: {
-        type: Sequelize.STRING
       },
       createdAt: {
         allowNull: false,
@@ -35,6 +35,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Questions');
+    await queryInterface.dropTable('Options');
   }
 };

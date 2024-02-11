@@ -3,46 +3,45 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class Question extends Model {
+  class Option extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      Question.belongsTo(models.Chapter)
-      Question.hasMany(models.Option);
+      Option.belongsTo(models.Question);
     }
   }
-  Question.init({
-    ChapterId: DataTypes.INTEGER,
-    status: {
+  Option.init({
+    option: {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
         notEmpty: {
-          msg: "Question status must not be empty"
+          msg: "Option must not be empty"
         },
         notNull: {
-          msg: "Question status must not be null"
+          msg: "Option must not be null"
         }
       }
     },
-    question: {
-      type: DataTypes.STRING,
+    status: {
+      type: DataTypes.BOOLEAN,
       allowNull: false,
       validate: {
         notEmpty: {
-          msg: "Question must not be empty"
+          msg: "Option status must not be empty"
         },
         notNull: {
-          msg: "Question must not be null"
+          msg: "Option status must not be null"
         }
       }
-    }
+    },
+    QuestionId: DataTypes.INTEGER
   }, {
     sequelize,
-    modelName: 'Question',
+    modelName: 'Option',
   });
-  return Question;
+  return Option;
 };

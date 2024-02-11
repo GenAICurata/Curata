@@ -116,17 +116,13 @@ class CourseController {
             // generate questions
             const questionList = [];
             for (let i = 0; i < 5; i++) {
-                const questionTemplate = {
-                    question: "",
-                    answer: "",
-                    option1: "",
-                    option2: "",
-                    option3: "",
-                };
-
-                const prompt = `You are to generate a random theory based question about ${courseName}`;
+                const options = [];
                 const completion = await openai.chat.completions.create({
-                    messages: [{ role: "user", content: prompt }],
+                    messages: [
+                        {
+                            role: "user",
+                            content: `You are to generate a random theory based question about ${courseName}`
+                        }],
                     model: "gpt-3.5-turbo",
                 });
 
@@ -142,30 +138,34 @@ class CourseController {
                 });
 
                 const generatedAnswer = answer.choices[0]?.message.content;
-                let visitedQuestions = "";
-                const optionList = [];
+                options.push({
+                    question: generatedAnswer,
+                    status: true,
+                    ChapterId: chapterId
+                })
+
+                let visitedOption = "";
                 for (let i = 0; i < 3; i++) {
-                    const options = await openai.chat.completions.create({
+                    const option = await openai.chat.completions.create({
                         messages: [
                             {
                                 role: "user",
                                 content:
-                                    `In below 10 words, give me a wrong answer to the question: ${generatedQuestion} without any precursor or additional words, that is not already in: ${visitedQuestions}.` +
+                                    `In below 10 words, give me a wrong answer to the question: ${generatedQuestion} without any precursor or additional words, that is not already in: ${visitedOption}.` +
                                     "Give wrong answers only that are still related.",
                             },
                         ],
                         model: "gpt-3.5-turbo-0125",
                     });
-                    visitedQuestions += ", " + options.choices[0]?.message.content;
-                    optionList.push(options.choices[0]?.message.content);
-                }
 
-                questionTemplate.question = generatedQuestion ?? "";
-                questionTemplate.answer = generatedAnswer ?? "";
-                questionTemplate.option1 = optionList[0] ?? "";
-                questionTemplate.option2 = optionList[1] ?? "";
-                questionTemplate.option3 = optionList[2] ?? "";
-                questionList.push(questionTemplate);
+                    const wrongOption = option.choices[0]?.message.content;
+                    visitedOption += ", " + wrongOption;
+                    options.push({
+                        question: wrongOption,
+                        status: false,
+                        ChapterId: chapterId
+                    });
+                }
             }
 
             // insert to db
