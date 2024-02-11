@@ -11,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       Chapter.belongsTo(models.Unit);
+      Chapter.hasMany(models.Question);
     }
   }
   Chapter.init({

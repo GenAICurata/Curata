@@ -68,7 +68,7 @@ class CourseController {
     static async createCourseVideo(req, res, next) {
         try {
             const openai = req.openai;
-            const { chapterName, chapterId, unitName } = req.body;
+            const { chapterName, chapterId, unitName, courseName } = req.body;
 
             // get search term from chapter
             const YTQuery = await openai.chat.completions.create({
@@ -114,6 +114,59 @@ class CourseController {
             })
 
             // generate questions
+            const questionList = [];
+            for (let i = 0; i < 5; i++) {
+                const questionTemplate = {
+                    question: "",
+                    answer: "",
+                    option1: "",
+                    option2: "",
+                    option3: "",
+                };
+
+                const prompt = `You are to generate a random theory based question about ${courseName}`;
+                const completion = await openai.chat.completions.create({
+                    messages: [{ role: "user", content: prompt }],
+                    model: "gpt-3.5-turbo",
+                });
+
+                const generatedQuestion = completion.choices[0]?.message.content;
+                const answer = await openai.chat.completions.create({
+                    messages: [
+                        {
+                            role: "user",
+                            content: `In below 10 words, give me the answer to the question: ${generatedQuestion} without any precursor or additional words.`,
+                        },
+                    ],
+                    model: "gpt-3.5-turbo",
+                });
+
+                const generatedAnswer = answer.choices[0]?.message.content;
+                let visitedQuestions = "";
+                const optionList = [];
+                for (let i = 0; i < 3; i++) {
+                    const options = await openai.chat.completions.create({
+                        messages: [
+                            {
+                                role: "user",
+                                content:
+                                    `In below 10 words, give me a wrong answer to the question: ${generatedQuestion} without any precursor or additional words, that is not already in: ${visitedQuestions}.` +
+                                    "Give wrong answers only that are still related.",
+                            },
+                        ],
+                        model: "gpt-3.5-turbo-0125",
+                    });
+                    visitedQuestions += ", " + options.choices[0]?.message.content;
+                    optionList.push(options.choices[0]?.message.content);
+                }
+
+                questionTemplate.question = generatedQuestion ?? "";
+                questionTemplate.answer = generatedAnswer ?? "";
+                questionTemplate.option1 = optionList[0] ?? "";
+                questionTemplate.option2 = optionList[1] ?? "";
+                questionTemplate.option3 = optionList[2] ?? "";
+                questionList.push(questionTemplate);
+            }
 
             // insert to db
             await Chapter.update({ videoThumbNail: thumbnails?.default?.url, videoTitle: title, videoId, videoTranscript: summarizedTranscript?.choices[0]?.message?.content }, {
