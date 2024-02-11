@@ -43,8 +43,6 @@ const Course: FunctionComponent<Props> = () => {
         }
     };
 
-    console.log(courses);
-
     return (
         <div className="py-28 px-24 flex flex-wrap gap-5 justify-center">
             <Link href={`/course/create`}>

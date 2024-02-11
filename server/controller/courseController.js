@@ -74,6 +74,12 @@ class CourseController {
                     model: Unit,
                     include: {
                         model: Chapter,
+                        include: {
+                            model: Question,
+                            include: {
+                                model: Option
+                            }
+                        }
                     }
                 }
             });
@@ -96,12 +102,6 @@ class CourseController {
                     model: Unit,
                     include: {
                         model: Chapter,
-                        include: {
-                            model: Question,
-                            include: {
-                                model: Option
-                            }
-                        }
                     }
                 }
             });
