@@ -1,9 +1,28 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function Home() {
     return (
-        <main className="gradient-background">
+        <main>
+            <Image
+                className="t-0 -z-10 h-screen w-screen animate-pulse bg-transparent"
+                src={"/circle-1.png"}
+                fill={true}
+                alt="background gif"
+            />
+            <Image
+                className="t-0 -z-10 h-screen w-screen animate-pulse bg-transparent delay-100"
+                src={"/circle-2.png"}
+                fill={true}
+                alt="background gif"
+            />
+            <Image
+                className="t-0 -z-10 h-screen w-screen animate-pulse bg-transparent delay-200"
+                src={"/circle-3.png"}
+                fill={true}
+                alt="background gif"
+            />
             <div className="min-h-[90vh] flex flex-col items-center justify-center gap-5">
                 <h1 className="text-5xl font-bold">Curata 🤖.</h1>
                 <p className="text-2xl">
