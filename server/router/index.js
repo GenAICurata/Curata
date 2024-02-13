@@ -4,6 +4,6 @@ const courseRouter = require('./courseRouter');
 const summarizeRouter = require('./summarizeRouter');
 
 router.use("/course", courseRouter);
-router.use("/summarize", summarizeRouter);
+router.use("/pdf", summarizeRouter);
 
 module.exports = router;
