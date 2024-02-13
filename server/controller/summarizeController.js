@@ -55,6 +55,7 @@ class Summarize {
             const index = pc.index("curata-store");
             const fileKey = req.body.fileKey;
             const headlines = [];
+            console.log(fileKey);
 
             // randomly select 4 chunks
             for (let i = 0; i < 4; i++) {

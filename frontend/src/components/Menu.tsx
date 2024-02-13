@@ -77,7 +77,7 @@ const Menu: FunctionComponent<Props> = () => {
                     </MenubarMenu>
                     <MenubarMenu>
                         <MenubarTrigger>
-                            <Link href="/summarize">ChatPDF ✨</Link>
+                            <Link href="/summarize">AI Summarize✨</Link>
                         </MenubarTrigger>
                     </MenubarMenu>
                 </Menubar>
