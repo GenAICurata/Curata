@@ -163,7 +163,7 @@ class CourseController {
             // generate questions
             for (let i = 0; i < 5; i++) {
                 const options = [];
-                const visitedQuestions = "";
+                let visitedQuestions = "";
 
                 const question = await openai.chat.completions.create({
                     messages: [

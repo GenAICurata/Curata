@@ -79,8 +79,6 @@ class Summarize {
                 headlines.push(headline.choices[0]?.message.content);
             }
 
-            console.log(headlines);
-
             const summaryResponse = {};
             // for each headline find 5 related chunks
             for (let headline of headlines) {
@@ -123,7 +121,83 @@ class Summarize {
     }
 
     static async getQuestion(req, res, next) {
+        const pc = req.pc;
+        const openai = req.openai;
+        const index = pc.index("curata-store");
+        const fileKey = req.body.fileKey;
 
+        try {
+            // generate questions
+            const questionResponse = {};
+            for (let i = 0; i < 5; i++) {
+                const options = [];
+                let visitedQuestions = "";
+
+                const randomVector = Array.from({ length: 1536 }, () => Math.random() * 2 - 1);
+                const randomQueryResponse = await index.namespace(fileKey).query({
+                    topK: 1,
+                    vector: randomVector,
+                    includeMetadata: true,
+                });
+
+                const question = await openai.chat.completions.create({
+                    messages: [
+                        {
+                            role: "user",
+                            content: `You are to generate a conceptual question based on the content of ${randomQueryResponse?.matches[0]?.metadata?.content}. Give only one question that doesn't exist yet in ${visitedQuestions} and don't give a yes/no question`
+                        }],
+                    model: "gpt-3.5-turbo",
+                });
+
+                const generatedQuestion = question.choices[0]?.message.content;
+                visitedQuestions += `${generatedQuestion}, `
+
+                // generate correct answer
+                const answer = await openai.chat.completions.create({
+                    messages: [
+                        {
+                            role: "user",
+                            content: `In below 10 words, give me the answer to the question: ${generatedQuestion} without any precursor or additional words.`,
+                        },
+                    ],
+                    model: "gpt-3.5-turbo",
+                });
+
+                const generatedAnswer = answer.choices[0]?.message.content;
+                options.push({
+                    option: generatedAnswer,
+                    status: true,
+                })
+
+                let visitedOption = "";
+                for (let i = 0; i < 3; i++) {
+                    const option = await openai.chat.completions.create({
+                        messages: [
+                            {
+                                role: "user",
+                                content:
+                                    `In below 10 words, give me a wrong answer to the question: ${generatedQuestion} without any precursor or additional words, that is not already in: ${visitedOption}.` +
+                                    "Give wrong answers only that are still related.",
+                            },
+                        ],
+                        model: "gpt-3.5-turbo-0125",
+                    });
+
+                    const wrongOption = option.choices[0]?.message.content;
+                    visitedOption += ", " + wrongOption;
+                    options.push({
+                        option: wrongOption,
+                        status: false,
+                    })
+                }
+
+                questionResponse[generatedQuestion] = options;
+            }
+
+            res.status(200).json({ message: "success", data: questionResponse });
+        } catch (err) {
+            next(err);
+        }
     }
 }
 
