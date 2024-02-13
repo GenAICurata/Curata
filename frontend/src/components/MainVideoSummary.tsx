@@ -21,7 +21,7 @@ const MainVideoSummary = ({ unitIndex, chapter, chapterIndex }: Props) => {
                 src={`https://www.youtube.com/embed/${chapter?.videoId}`}
                 allowFullScreen
             />
-            <div className="mt-4">
+            <div className="mt-4 h-[360px] overflow-y-scroll">
                 <h3 className="text-3xl font-semibold">Summary</h3>
                 <p className="mt-2 text-secondary-foreground/80">
                     {chapter?.videoTranscript}

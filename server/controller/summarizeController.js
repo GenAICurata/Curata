@@ -66,6 +66,8 @@ class Summarize {
                     includeMetadata: true,
                 });
 
+                console.log(randomQueryResponse?.matches[0]?.metadata?.content);
+
                 const headline = await openai.chat.completions.create({
                     messages: [
                         {

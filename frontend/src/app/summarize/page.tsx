@@ -34,14 +34,16 @@ const Summarize: FunctionComponent<Props> = () => {
                 text: "Generating Content Summary...",
             });
 
-            const [summary, question] = await Promise.all([
-                apiClient.post("/pdf/summary", { fileKey: fileKey }),
-                apiClient.post("/pdf/question", { fileKey: fileKey }),
-            ]);
+            setTimeout(async () => {
+                const [summary, question] = await Promise.all([
+                    apiClient.post("/pdf/summary", { fileKey: fileKey }),
+                    apiClient.post("/pdf/question", { fileKey: fileKey }),
+                ]);
 
-            setLoading({ status: false, text: "" });
-            setSummary(summary);
-            setQuestion(question);
+                setLoading({ status: false, text: "" });
+                setSummary(summary.data);
+                setQuestion(question.data);
+            }, 10000);
         } catch (err) {
             console.log(err);
         }
