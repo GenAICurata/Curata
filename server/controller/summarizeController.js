@@ -2,10 +2,13 @@ const pdf = require('pdf-parse');
 
 class Summarize {
     static async summarizePdf(req, res, next) {
+        const pc = req.pc;
+
         try {
             // multipart file
             const file = req.files.file;
             const dataBuffer = file.data;
+            const fileKey = req.files.fileKey;
 
             // extract the pdf from the buffer
             const extractedPdf = await pdf(dataBuffer);
@@ -15,11 +18,14 @@ class Summarize {
             console.log(content);
 
             // do something with file
-            res.send('File uploaded');
+            res.status(200).json({ message: "success" })
         } catch (err) {
             console.log(err);
             next(err);
         }
+    }
+
+    static async generateQuestionsFromPdf(req, res, next) {
 
     }
 }

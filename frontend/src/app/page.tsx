@@ -5,9 +5,9 @@ export default function Home() {
     return (
         <main className="gradient-background">
             <div className="min-h-[90vh] flex flex-col items-center justify-center gap-5">
-                <h1 className="text-5xl font-bold">Cognimate 🤖.</h1>
+                <h1 className="text-5xl font-bold">Curata 🤖.</h1>
                 <p className="text-2xl">
-                    Your all-in-one AI Study Assistant designed to elevate your
+                    Your all-in-one AI Study Assistant curated to elevate your
                     learning experience
                 </p>
                 <Link href="/course">

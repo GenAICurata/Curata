@@ -26,7 +26,7 @@ const Menu: FunctionComponent<Props> = () => {
                         style={{ color: "transparent" }}
                         src="/logo.svg"
                     />
-                    <h1 className="font-bold text-2xl">Cognimate</h1>
+                    <h1 className="font-bold text-2xl">Curata</h1>
                 </div>
             </Link>
             <div className="flex justify-center">
