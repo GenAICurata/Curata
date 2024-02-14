@@ -98,7 +98,7 @@ const CreateSubTopicsPage: FunctionComponent<Props> = () => {
                     course?.Units.map((unit, index) => (
                         <div className="mt-8" key={index}>
                             <p className="text-[#767574] font-semibold">
-                                UNIT 1
+                                UNIT {index + 1}
                             </p>
                             <h2 className="text-2xl font-bold">
                                 {unit?.unitName}
